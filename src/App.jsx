@@ -1,122 +1,167 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
+import Auth from './pages/Auth';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+// Компонент навигации (Navbar)
+function Navbar() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = (e) => {
+  e.preventDefault();
+  console.log("Trying to log out:");
+  // Future: Send registration request to backend, then maybe auto-login or show success message
+  navigate('/auth'); // For now, just simulating success
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+    <nav className="navbar">
+      <div className="navbar-brand">
+        <span className="brand-text">Fitness tracker</span>
+      </div>
+      <div className="navbar-links">
+        <Link 
+          to="/dashboard" 
+          className={`nav-link ${location.pathname === '/dashboard' ? 'active' : ''}`}
         >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+          <span className="nav-icon">📊</span> Diary
+        </Link>
+        <Link 
+          to="/training" 
+          className={`nav-link ${location.pathname === '/training' ? 'active' : ''}`}
+        >
+          <span className="nav-icon">🏋️‍♂️</span> Training
+        </Link>
+        <Link 
+          to="/nutrition" 
+          className={`nav-link ${location.pathname === '/nutrition' ? 'active' : ''}`}
+        >
+          <span className="nav-icon">🥗</span> Nutrition
+        </Link>
+        <Link 
+          to="/body-metrics" 
+          className={`nav-link ${location.pathname === '/body-metrics' ? 'active' : ''}`}
+        >
+          <span className="nav-icon">📏</span> Body Stats
+        </Link>
+      </div>
+      <div className="navbar-user">
+        <div className="user-avatar">K</div>
+        <button className="logout-btn" onClick={handleLogout}>Log out</button>
+      </div>
+    </nav>
+  );
 }
 
-export default App
+// Выносим код дневника в отдельный компонент
+function Dashboard() {
+  const [nutritionData, setNutritionData] = useState(null);
+  const [error, setError] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/nutrition/today/1')
+      .then(response => response.json())
+      .then(data => setNutritionData(data))
+      .catch(err => {
+        console.error(err);
+        setError(true);
+      });
+  }, []);
+
+  const handleLogFood = (e) => {
+    e.preventDefault();
+    console.log("Navigating to nutrition logger...");
+    navigate('/nutrition'); // Меняем путь на страницу Nutrition
+  };
+
+  return (
+    <div className="page-layout">
+      <Navbar />
+      
+      <div className="main-container">
+        <header className="page-header">
+          <h1>My Diary</h1>
+          <p className="page-subtitle">Welcome back! Here is your summary for today.</p>
+        </header>
+
+        <main className="content">
+          <h2>Today's report</h2>
+          {error ? (
+            <p className="error-text">Loading not successful. Backend error.</p>
+          ) : !nutritionData ? (
+            <p>Loading...</p>
+          ) : (
+            <div className="card">
+              <div className="card-header">
+                <h3>Ate today</h3>
+                <div className="macros">
+                  <span className="macro-badge">Calories: {nutritionData.summary.total_calories} kcal</span>
+                  <span className="macro-badge protein">Protein: {nutritionData.summary.total_protein} g</span>
+                  <span className="macro-badge carbs">Carbs: {nutritionData.summary.total_carbs} g</span>
+                  <span className="macro-badge fats">Fats: {nutritionData.summary.total_fats} g</span>
+                </div>
+              </div>
+              <ul className="food-list">
+                {nutritionData.items_eaten.map((item, index) => (
+                  <li key={index} className="food-item">
+                    <span className="food-name">{item.food_name} ({item.meal_type})</span>
+                    <span className="food-details">{item.weight_grams} g — {item.calories} kcal</span>
+                  </li>
+                ))}
+                {nutritionData.items_eaten.length === 0 && (
+                  <li className="food-item empty-state">No food logged today yet.</li>
+                )}
+              </ul>
+              <button className='log-food-button' onClick={handleLogFood}>Log</button>
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+// Временные заглушки для новых страниц
+function PlaceholderPage({ title, emoji }) {
+  return (
+    <div className="page-layout">
+      <Navbar />
+      <div className="main-container">
+        <header className="page-header">
+          <h1>{title}</h1>
+        </header>
+        <main className="content">
+          <div className="card empty-card">
+            <span className="empty-icon">{emoji}</span>
+            <h3>Work in progress</h3>
+            <p>This page is currently under construction.</p>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+// Главный компонент, который управляет маршрутами
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        
+        {/* Новые маршруты */}
+        <Route path="/training" element={<PlaceholderPage title="Training Log" emoji="🏋️‍♂️" />} />
+        <Route path="/nutrition" element={<PlaceholderPage title="Nutrition Tracker" emoji="🥗" />} />
+        <Route path="/body-metrics" element={<PlaceholderPage title="Body Statistics" emoji="📈" />} />
+        
+        {/* Если кто-то заходит в корень сайта, сразу кидаем на логин */}
+        <Route path="/" element={<Navigate to="/auth" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
