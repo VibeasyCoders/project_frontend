@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
 import Auth from './pages/Auth';
 import './App.css';
+import Pisun from './pages/Test';
 
 // Компонент навигации (Navbar)
 function Navbar() {
@@ -73,7 +74,7 @@ function Dashboard() {
   const handleLogFood = (e) => {
     e.preventDefault();
     console.log("Navigating to nutrition logger...");
-    navigate('/nutrition'); // Меняем путь на страницу Nutrition
+    navigate('/test'); // Меняем путь на страницу Nutrition
   };
 
   return (
@@ -151,10 +152,11 @@ function App() {
       <Routes>
         <Route path="/auth" element={<Auth />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        
+        <Route path="/test" element={<Pisun />} />
         {/* Новые маршруты */}
         <Route path="/training" element={<PlaceholderPage title="Training Log" emoji="🏋️‍♂️" />} />
-        <Route path="/nutrition" element={<PlaceholderPage title="Nutrition Tracker" emoji="🥗" />} />
+        
+      
         <Route path="/body-metrics" element={<PlaceholderPage title="Body Statistics" emoji="📈" />} />
         
         {/* Если кто-то заходит в корень сайта, сразу кидаем на логин */}
