@@ -3,63 +3,58 @@ import { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate 
 import Auth from './pages/Auth';
 import './App.css';
 import Pisun from './pages/Test';
+import Nutrition from './pages/Nutrition';
+import Navbar from './components/Navbar';
 
-// Компонент навигации (Navbar)
-function Navbar() {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const handleLogout = (e) => {
-  e.preventDefault();
-  console.log("Trying to log out:");
-  // Future: Send registration request to backend, then maybe auto-login or show success message
-  navigate('/auth'); // For now, just simulating success
-  };
-
+// --- КОМПОНЕНТ МОДАЛКИ (Вставляем над Dashboard) ---
+function LogFoodModal({ onClose }) {
   return (
-    <nav className="navbar">
-      <div className="navbar-brand">
-        <span className="brand-text">Fitness tracker</span>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3>Log food</h3>
+          <button className="close-btn" onClick={onClose}>×</button>
+        </div>
+        
+        <div className="modal-body">
+          <input 
+            type="text" 
+            placeholder="Search  product..." 
+            className="search-input"
+          />
+          
+          <div className="recent-foods">
+            <p className="section-title">Recently used:</p>
+            {/* Пока это заглушки, позже будем тянуть их из базы */}
+            <ul className="food-list">
+              <li className="food-item">
+                <span className="food-name">Скир (Skyr)</span>
+                <button className="add-btn">+</button>
+              </li>
+              <li className="food-item">
+                <span className="food-name">Овсянка</span>
+                <button className="add-btn">+</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="modal-footer">
+          <button className="log-food-button" style={{width: '100%'}} onClick={onClose}>
+            Done
+          </button>
+        </div>
       </div>
-      <div className="navbar-links">
-        <Link 
-          to="/dashboard" 
-          className={`nav-link ${location.pathname === '/dashboard' ? 'active' : ''}`}
-        >
-          <span className="nav-icon">📊</span> Diary
-        </Link>
-        <Link 
-          to="/training" 
-          className={`nav-link ${location.pathname === '/training' ? 'active' : ''}`}
-        >
-          <span className="nav-icon">🏋️‍♂️</span> Training
-        </Link>
-        <Link 
-          to="/nutrition" 
-          className={`nav-link ${location.pathname === '/nutrition' ? 'active' : ''}`}
-        >
-          <span className="nav-icon">🥗</span> Nutrition
-        </Link>
-        <Link 
-          to="/body-metrics" 
-          className={`nav-link ${location.pathname === '/body-metrics' ? 'active' : ''}`}
-        >
-          <span className="nav-icon">📏</span> Body Stats
-        </Link>
-      </div>
-      <div className="navbar-user">
-        <div className="user-avatar">K</div>
-        <button className="logout-btn" onClick={handleLogout}>Log out</button>
-      </div>
-    </nav>
+    </div>
   );
 }
 
-// Выносим код дневника в отдельный компонент
+// --- ОБНОВЛЕННЫЙ DASHBOARD ---
 function Dashboard() {
   const [nutritionData, setNutritionData] = useState(null);
   const [error, setError] = useState(false);
-  const navigate = useNavigate();
+  // Добавляем состояние для управления модалкой
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetch('http://localhost:5000/api/nutrition/today/1')
@@ -71,10 +66,10 @@ function Dashboard() {
       });
   }, []);
 
+  // Эта функция теперь просто открывает модалку, а не перекидывает на другую страницу
   const handleLogFood = (e) => {
     e.preventDefault();
-    console.log("Navigating to nutrition logger...");
-    navigate('/test'); // Меняем путь на страницу Nutrition
+    setIsModalOpen(true); 
   };
 
   return (
@@ -83,8 +78,8 @@ function Dashboard() {
       
       <div className="main-container">
         <header className="page-header">
-          <h1>My Diary</h1>
-          <p className="page-subtitle">Welcome back! Here is your summary for today.</p>
+          <h1>My diary</h1>
+          <p className="page-subtitle">Welcome back! Here's your summary</p>
         </header>
 
         <main className="content">
@@ -115,11 +110,18 @@ function Dashboard() {
                   <li className="food-item empty-state">No food logged today yet.</li>
                 )}
               </ul>
+              
+              {/* При клике меняем стейт, чтобы открыть модалку */}
               <button className='log-food-button' onClick={handleLogFood}>Log</button>
             </div>
           )}
         </main>
       </div>
+
+      {/* Если стейт true, рисуем модалку поверх всего */}
+      {isModalOpen && (
+        <LogFoodModal onClose={() => setIsModalOpen(false)} />
+      )}
     </div>
   );
 }
@@ -152,7 +154,7 @@ function App() {
       <Routes>
         <Route path="/auth" element={<Auth />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/test" element={<Pisun />} />
+        <Route path="/nutrition" element={<Nutrition />} />
         {/* Новые маршруты */}
         <Route path="/training" element={<PlaceholderPage title="Training Log" emoji="🏋️‍♂️" />} />
         
