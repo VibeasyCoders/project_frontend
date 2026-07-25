@@ -11,7 +11,7 @@ import {
 import { getLocalDateString } from './dateUtils';
 
 import TrainingHistory from './TrainingHistory';
-import TrainingForm from './TrainingForm';
+import StartTraining from './StartTraining';
 import ExerciseManager from './ExerciseManager';
 import TrainingStats from './TrainingStats';
 import TrainingCalendar from './TrainingCalendar';
@@ -20,20 +20,12 @@ import TrainingCalendar from './TrainingCalendar';
 
 function Training() {
 
-
   const [activeTab, setActiveTab] = useState('history');
-
-
-
   const [trainings, setTrainings] = useState(() => {
 
     return getTrainings();
 
   });
-
-
-
-
 
   const [exercises, setExercises] = useState(() => {
 
@@ -42,26 +34,12 @@ function Training() {
   });
 
 
-
-
-
   // current training
 
   const [sets, setSets] = useState([]);
-
-
   const [exercise, setExercise] = useState('');
-
-
   const [weight, setWeight] = useState('');
-
-
   const [reps, setReps] = useState('');
-
-
-
-
-
 
 
   useEffect(() => {
@@ -71,23 +49,11 @@ function Training() {
   }, [trainings]);
 
 
-
-
-
-
-
   useEffect(() => {
 
     saveExercises(exercises);
 
   }, [exercises]);
-
-
-
-
-
-
-
 
 
   const deleteTraining = (id) => {
@@ -106,13 +72,6 @@ function Training() {
   };
 
 
-
-
-
-
-
-
-
   const finishTraining = () => {
 
 
@@ -123,17 +82,7 @@ function Training() {
     }
 
 
-
-
-
-
-
     const groupedExercises = [];
-
-
-
-
-
 
 
     sets.forEach((set) => {
@@ -148,11 +97,6 @@ function Training() {
             item.name === set.exercise
 
         );
-
-
-
-
-
 
 
       if (existing) {
@@ -201,13 +145,6 @@ function Training() {
 
 
     });
-
-
-
-
-
-
-
 
 
     const newTraining = {
@@ -564,7 +501,7 @@ function Training() {
             {activeTab === 'create' && (
 
 
-              <TrainingForm
+              <StartTraining
 
 
 

@@ -6,6 +6,9 @@ import Pisun from './pages/Test';
 import Nutrition from './pages/Nutrition';
 import Navbar from './components/Navbar';
 import Training from './pages/Training/Training';
+import BodyStats from './pages/BodyStats/BodyStats';
+
+
 
 // --- КОМПОНЕНТ МОДАЛКИ (Вставляем над Dashboard) ---
 function LogFoodModal({ onClose }) {
@@ -157,9 +160,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/nutrition" element={<Nutrition />} />
         <Route path="/training" element={<Training />} />
-        
-      
-        <Route path="/body-metrics" element={<PlaceholderPage title="Body Statistics" emoji="📈" />} />
+        <Route path="/body-metrics" element={<BodyStats />} />
+
         
         {/* Если кто-то заходит в корень сайта, сразу кидаем на логин */}
         <Route path="/" element={<Navigate to="/auth" replace />} />

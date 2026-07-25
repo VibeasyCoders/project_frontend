@@ -1,6 +1,6 @@
 import '../../App.css'
 
-function TrainingForm({
+function StartTraining({
   exercises,
   sets,
   setSets,
@@ -400,4 +400,4 @@ function TrainingForm({
 }
 
 
-export default TrainingForm;
+export default StartTraining;
