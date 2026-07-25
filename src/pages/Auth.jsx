@@ -1,24 +1,68 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault(); 
-    console.log("Trying to log in with:", email, password);
-    // Future: Send login request to backend
-    navigate('/dashboard');
-  };
+const handleLogin = async (e) => {
+  e.preventDefault();
+  
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
 
-  const handleRegister = (e) => {
-    e.preventDefault();
-    console.log("Trying to register with:", email, password);
-    // Future: Send registration request to backend, then maybe auto-login or show success message
-    navigate('/dashboard'); // For now, just simulating success
-  };
+    if (response.ok) {
+      const userData = await response.json();
+      // Самое главное: сохраняем ID пользователя в память браузера
+      localStorage.setItem('userId', userData.user_id);
+      
+      navigate('/dashboard'); 
+    } else {
+      const errorData = await response.json();
+      alert(errorData); 
+    }
+  } catch (err) {
+    console.error("Network error:", err);
+  }
+};
+
+const handleRegister = async (e) => { 
+  e.preventDefault();
+  
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: "NewUser",
+        email: email,
+        password: password
+      })
+    });
+
+    if (response.ok) {
+      localStorage.setItem('userId', data.user_id)
+      navigate('/dashboard'); 
+    } else {
+      const errorData = await response.json();
+      alert(errorData); 
+    }
+  } catch (err) {
+    console.error("Network error:", err);
+  }
+};
 
   return (
     <div className="auth-container">

@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'BodyStats';
+const STORAGE_KEY = 'body-stats';
 
 
 
