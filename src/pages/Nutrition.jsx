@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
+import '../App.css'
 
 function Nutrition() {
   // Состояние для переключения вкладок: 'list' | 'product' | 'meal'
@@ -125,7 +126,7 @@ function Nutrition() {
                     <ul className="food-list" style={{ marginBottom: '15px' }}>
                       <li className="food-item empty-state">No products yet. Press "Add" below.</li>
                     </ul>
-                    <button type="button" className="auth-button" style={{ background: '#6c757d', width: '100%' }}>
+                    <button type="button" className="login-button" style={{ width: '100%' }}>
                       + Add ingredient
                     </button>
                   </div>

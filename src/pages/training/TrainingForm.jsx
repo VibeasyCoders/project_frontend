@@ -1,3 +1,5 @@
+import '../../App.css'
+
 function TrainingForm({
   exercises,
   sets,
@@ -229,7 +231,7 @@ function TrainingForm({
 
           type="button"
 
-          className="auth-button"
+          className="login-button"
 
           onClick={addSet}
 

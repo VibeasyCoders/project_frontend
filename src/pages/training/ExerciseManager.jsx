@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import '../../App.css';
 
 function ExerciseManager({
   exercises,
@@ -123,7 +123,7 @@ function ExerciseManager({
 
       <button
 
-        className="auth-button"
+        className="login-button"
 
         onClick={addExercise}
 
